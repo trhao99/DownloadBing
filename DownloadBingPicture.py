@@ -4,7 +4,7 @@ Spyder Editor
 This is a temporary script file.
 """
 import ctypes  
-import win32api, win32con
+import win32api, win32con, win32gui
 import requests
 import os
 import json
@@ -13,6 +13,7 @@ import time
 import socket
 from tkinter import *
 import threading
+base_path = "C:\\Users\\19279\\Pictures\\Bing\\"
 def closewindows(tk):
     for radio in range(100):
         tk.attributes("-alpha", 1-0.01*radio)
@@ -32,14 +33,12 @@ def isNetOK(address=('www.baidu.com',443)):
         #print("没联网")
         return False
 def setWallpaper( bmp ):
-    import win32api, win32con, win32gui
     k = win32api.RegOpenKeyEx(win32con.HKEY_CURRENT_USER,"Control Panel\\Desktop",0,win32con.KEY_SET_VALUE)
     win32api.RegSetValueEx(k, "WallpaperStyle", 0, win32con.REG_SZ, "0")
     win32api.RegSetValueEx(k, "TileWallpaper", 0, win32con.REG_SZ, "0")
     win32gui.SystemParametersInfo(win32con.SPI_SETDESKWALLPAPER, bmp, 1+2)
 def Judge(time):
-    path = "D:\BingPicture\\"
-    filelist = os.listdir(path)
+    filelist = os.listdir(base_path)
     if len(filelist)==0:
         return False
     #print(filelist[-1])
@@ -49,10 +48,10 @@ def windowstext(text):
     tk=Tk()
     #创建画布
     tk.title('今日bing')
-    canvas=Canvas(tk,width=1600,height=60)
+    canvas=Canvas(tk,width=1600, height=60)
     canvas.pack()
     #在画布上创建文字
-    canvas.create_text(600,40,text=text)
+    canvas.create_text(600, 40, text=text)
     return tk
 if __name__ == '__main__':
     if isNetOK():
@@ -70,7 +69,7 @@ if __name__ == '__main__':
         text = json_data['images'][0]['copyright']
         image_part_name = json_data['images'][0]['enddate']
         image_name = "BingPicture_" + image_part_name + ".jpg"
-        image_path = "D:\\Application\\BingPicture\\" + image_name
+        image_path = base_path + image_name
         with open(image_path, 'wb') as f:
                 f.write(image.content)
                 f.close()
